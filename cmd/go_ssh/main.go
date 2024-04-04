@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"sync"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
@@ -11,7 +12,9 @@ import (
 )
 
 func main() {
-	cfgFilePath := "./frpc.toml"
+	var cfgFilePath string
+	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "Path to the configuration file")
+	flag.Parse()
 
 	cfg, proxyCfgs, visitorCfgs, _, err := config.LoadClientConfig(cfgFilePath, true)
 	if err != nil {
