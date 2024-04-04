@@ -1,4 +1,4 @@
-module github.com/blizard/frpc-slim
+module github.com/gofrp/tiny-frpc
 
 go 1.20
 

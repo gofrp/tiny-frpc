@@ -5,8 +5,8 @@ import (
 
 	"golang.org/x/crypto/ssh"
 
-	"github.com/blizard/frpc-slim/pkg/util"
-	"github.com/blizard/frpc-slim/pkg/util/log"
+	"github.com/gofrp/tiny-frpc/pkg/util"
+	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 type TunnelClient struct {

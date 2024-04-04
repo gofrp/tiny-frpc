@@ -12,7 +12,7 @@ fmt-more:
 	gofumpt -l -w .
 
 gci:
-	gci write -s standard -s default -s "prefix(github.com/blizard/frpc-slim/)" ./
+	gci write -s standard -s default -s "prefix(github.com/gofrp/tiny-frpc/)" ./
 
 vet:
 	go vet ./...

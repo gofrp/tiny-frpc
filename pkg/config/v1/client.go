@@ -19,7 +19,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/blizard/frpc-slim/pkg/util"
+	"github.com/gofrp/tiny-frpc/pkg/util"
 )
 
 type ClientConfig struct {

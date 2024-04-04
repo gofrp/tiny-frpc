@@ -11,9 +11,9 @@ import (
 
 	toml "github.com/pelletier/go-toml/v2"
 
-	v1 "github.com/blizard/frpc-slim/pkg/config/v1"
-	"github.com/blizard/frpc-slim/pkg/util"
-	"github.com/blizard/frpc-slim/pkg/util/log"
+	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
+	"github.com/gofrp/tiny-frpc/pkg/util"
+	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 var glbEnvs map[string]string

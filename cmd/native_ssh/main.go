@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
-	"github.com/blizard/frpc-slim/pkg/config"
-	v1 "github.com/blizard/frpc-slim/pkg/config/v1"
-	"github.com/blizard/frpc-slim/pkg/nssh"
-	"github.com/blizard/frpc-slim/pkg/util"
-	"github.com/blizard/frpc-slim/pkg/util/log"
+	"github.com/gofrp/tiny-frpc/pkg/config"
+	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
+	"github.com/gofrp/tiny-frpc/pkg/nssh"
+	"github.com/gofrp/tiny-frpc/pkg/util"
+	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 func main() {

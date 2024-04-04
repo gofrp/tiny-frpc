@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	v1 "github.com/blizard/frpc-slim/pkg/config/v1"
-	"github.com/blizard/frpc-slim/pkg/util/log"
+	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
+	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 type GoSSHParam struct {

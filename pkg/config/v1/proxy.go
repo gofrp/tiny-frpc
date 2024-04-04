@@ -23,7 +23,7 @@ import (
 	"reflect"
 	"strconv"
 
-	"github.com/blizard/frpc-slim/pkg/util"
+	"github.com/gofrp/tiny-frpc/pkg/util"
 )
 
 type ProxyBackend struct {

@@ -8,7 +8,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/blizard/frpc-slim/pkg/util/log"
+	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 type CmdWrapper struct {
