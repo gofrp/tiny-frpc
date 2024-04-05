@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"sync"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
@@ -9,21 +10,34 @@ import (
 	"github.com/gofrp/tiny-frpc/pkg/gssh"
 	"github.com/gofrp/tiny-frpc/pkg/util"
 	"github.com/gofrp/tiny-frpc/pkg/util/log"
+	"github.com/gofrp/tiny-frpc/pkg/util/version"
 )
 
 func main() {
-	var cfgFilePath string
-	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "Path to the configuration file")
+	var (
+		cfgFilePath string
+		showVersion bool
+	)
+
+	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "path to the configuration file")
+	flag.BoolVar(&showVersion, "v", false, "version of frpc-gssh")
 	flag.Parse()
+
+	if showVersion {
+		fmt.Println(version.Full())
+		return
+	}
 
 	cfg, proxyCfgs, visitorCfgs, _, err := config.LoadClientConfig(cfgFilePath, true)
 	if err != nil {
-		panic(err)
+		log.Errorf("load frpc config error: %v", err)
+		return
 	}
 
 	_, err = v1.ValidateAllClientConfig(cfg, proxyCfgs, visitorCfgs)
 	if err != nil {
-		panic(err)
+		log.Errorf("validate frpc config error: %v", err)
+		return
 	}
 
 	log.Infof("common cfg: %v, proxy cfg: %v, visitor cfg: %v", util.JSONEncode(cfg), util.JSONEncode(proxyCfgs), util.JSONEncode(visitorCfgs))

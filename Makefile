@@ -34,3 +34,6 @@ clean:
 	rm -f ./bin/gssh
 	rm -f ./bin/nssh
 	rm -rf ./lastversion
+
+env:
+	@go version

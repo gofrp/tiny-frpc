@@ -33,7 +33,6 @@ func ParseFRPCConfigToGoSSHParam(
 
 				SSHExtraCmd: genSSHExtraCmd(*cfg, pv),
 			})
-
 		default:
 			panic("invalid proxy type: " + pv.GetProxyType())
 		}
