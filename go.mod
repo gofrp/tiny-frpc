@@ -1,6 +1,6 @@
 module github.com/gofrp/tiny-frpc
 
-go 1.22
+go 1.21
 
 require (
 	github.com/pelletier/go-toml/v2 v2.2.0
