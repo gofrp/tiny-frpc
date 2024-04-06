@@ -31,8 +31,8 @@ gotest:
 alltest: vet gotest
 	
 clean:
-	rm -f ./bin/gssh
-	rm -f ./bin/nssh
+	rm -f ./bin/frpc-gssh
+	rm -f ./bin/frpc-nssh
 	rm -rf ./lastversion
 
 env:

@@ -9,7 +9,7 @@ release:
   # Same as for github
   # Note: it can only be one: either github, gitlab or gitea
   github:
-    owner: blizard863
+    owner: gofrp
     name: tiny-frpc
 
   draft: false

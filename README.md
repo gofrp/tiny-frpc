@@ -1,5 +1,4 @@
-"""
-# Tiny-FRPC
+# tiny-frpc
 
 # Introduction
 
@@ -7,7 +6,7 @@ Starting from version v0.53.0, frp supports the ssh tunnel mode [ssh tunnel gate
 
 Many users need to use reverse proxy in microsystems where memory and storage space are limited, which may prevent the normal use of frpc. The purpose of this project is to provide a minimal version of the reverse proxy, which communicates with frps through the ssh protocol only.
 
-We provide two types of binary programs - the native-ssh version and the go-ssh version. Both programs parse the [standard file format of frpc](https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml), and communicate with frps to complete the reverse proxy.
+We provide two types of binary programs - the native-ssh version and the go-ssh version. Both programs parse the [frpc toml file](https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml), and communicate with frps to complete the reverse proxy.
 
 * The native-ssh version requires that your machine already have an ssh program, otherwise it won't work. The binary file is smaller.
 
@@ -15,7 +14,7 @@ We provide two types of binary programs - the native-ssh version and the go-ssh 
 
 # Usage
 
-## 1. Prepare the frpc configuration file according to the [standard file format of frpc](https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml)
+## 1. Prepare the frpc configuration file according to the [frpc toml file](https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml)
 Note: Only the toml file format is supported.
 
 ## 2. Download the corresponding version of tiny-frpc
