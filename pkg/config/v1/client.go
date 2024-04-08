@@ -68,7 +68,8 @@ type AuthClientConfig struct {
 }
 
 func (c *AuthClientConfig) Complete() {
-	c.Method = util.EmptyOr(c.Method, "token")
+	// only support token
+	c.Method = "token"
 }
 
 // Contains returns true if an element is present in a collection.
