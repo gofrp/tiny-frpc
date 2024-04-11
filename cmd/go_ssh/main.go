@@ -54,7 +54,7 @@ func main() {
 		go func(cmd config.GoSSHParam) {
 			defer wg.Done()
 
-			log.Infof("start to run %v", cmd)
+			log.Infof("start to run: %v", cmd)
 
 			tc := gssh.NewTunnelClient(cmd.LocalAddr, cmd.ServerAddr, cmd.SSHExtraCmd)
 

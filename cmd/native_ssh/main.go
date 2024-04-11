@@ -57,7 +57,7 @@ func main() {
 			defer wg.Done()
 			ctx := context.Background()
 
-			log.Infof("start to run %v", cmd)
+			log.Infof("start to run: %v", cmd)
 
 			task := nssh.NewCmdWrapper(ctx, cmd, closeCh)
 			task.ExecuteCommand(ctx)

@@ -22,6 +22,7 @@ import (
 	"net"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gofrp/tiny-frpc/pkg/util"
 )
@@ -171,9 +172,11 @@ type HTTPProxyConfig struct {
 func (c *HTTPProxyConfig) MarshalToMsg(m *NewProxy) {
 	c.ProxyBaseConfig.MarshalToMsg(m)
 
-	m.CustomDomains = c.CustomDomains
+	// array to string
+	m.CustomDomains = strings.Join(c.CustomDomains, ",")
+	m.Locations = strings.Join(c.Locations, ",")
+
 	m.SubDomain = c.SubDomain
-	m.Locations = c.Locations
 	m.HostHeaderRewrite = c.HostHeaderRewrite
 	m.HTTPUser = c.HTTPUser
 	m.HTTPPwd = c.HTTPPassword
@@ -199,7 +202,7 @@ type HTTPSProxyConfig struct {
 func (c *HTTPSProxyConfig) MarshalToMsg(m *NewProxy) {
 	c.ProxyBaseConfig.MarshalToMsg(m)
 
-	m.CustomDomains = c.CustomDomains
+	m.CustomDomains = strings.Join(c.CustomDomains, ",")
 	m.SubDomain = c.SubDomain
 }
 
@@ -232,7 +235,7 @@ type TCPMuxProxyConfig struct {
 func (c *TCPMuxProxyConfig) MarshalToMsg(m *NewProxy) {
 	c.ProxyBaseConfig.MarshalToMsg(m)
 
-	m.CustomDomains = c.CustomDomains
+	m.CustomDomains = strings.Join(c.CustomDomains, ",")
 	m.SubDomain = c.SubDomain
 	m.Multiplexer = c.Multiplexer
 	m.HTTPUser = c.HTTPUser
@@ -261,7 +264,7 @@ func (c *STCPProxyConfig) MarshalToMsg(m *NewProxy) {
 	c.ProxyBaseConfig.MarshalToMsg(m)
 
 	m.Sk = c.Secretkey
-	m.AllowUsers = c.AllowUsers
+	m.AllowUsers = strings.Join(c.AllowUsers, ",")
 }
 
 func (c *STCPProxyConfig) GetProxyType() ProxyType {
@@ -276,27 +279,28 @@ type NewProxy struct {
 	ProxyName string `flag:"proxy-name"`
 	ProxyType string
 
-	Metas map[string]string `flag:"metas"`
-
 	// tcp
 	RemotePort int `flag:"remote-port"`
 
 	// http and https only
-	CustomDomains     []string `flag:"custom-domain"`
-	SubDomain         string   `flag:"sd"`
-	Locations         []string `flag:"locations"`
-	HTTPUser          string   `flag:"http-user"`
-	HTTPPwd           string   `flag:"http-pwd"`
-	HostHeaderRewrite string   `flag:"host-header-rewrite"`
+	// (WARN): CustomDomains and Locations are array should be convert to string
+	CustomDomains     string `flag:"custom-domain"`
+	Locations         string `flag:"locations"`
+	SubDomain         string `flag:"sd"`
+	HTTPUser          string `flag:"http-user"`
+	HTTPPwd           string `flag:"http-pwd"`
+	HostHeaderRewrite string `flag:"host-header-rewrite"`
 
 	// stcp
-	Sk         string   `flag:"sk"`
-	AllowUsers []string `flag:"allow-users"`
+	Sk string `flag:"sk"`
+	// (WARN): AllowUsers are array should be convert to string
+	AllowUsers string `flag:"allow-users"`
 
 	// tcpmux
 	Multiplexer string `flag:"mux"`
 
 	// TODO deprecated ?
+	Metas           map[string]string `flag:"metas"`
 	Headers         map[string]string `flag:"headers"`
 	RouteByHTTPUser string
 }
