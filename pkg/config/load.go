@@ -74,13 +74,9 @@ func LoadConfigure(b []byte, c any, strict bool) error {
 	defer v1.DisallowUnknownFieldsMu.Unlock()
 	v1.DisallowUnknownFields = strict
 
-	log.Infof("file content: %v", string(b))
-
 	var tomlObj interface{}
 	// Try to unmarshal as TOML first; swallow errors from that (assume it's not valid TOML).
 	if err := toml.Unmarshal(b, &tomlObj); err == nil {
-		log.Infof("use toml unmarshal file to struct: toml obj: %v", util.JSONEncode(tomlObj))
-
 		b, err = json.Marshal(&tomlObj)
 		if err != nil {
 			return err
@@ -97,8 +93,6 @@ func LoadConfigure(b []byte, c any, strict bool) error {
 		}
 
 		err := decoder.Decode(c)
-
-		log.Infof("json decode config: %v", util.JSONEncode(c))
 
 		return err
 	}

@@ -29,7 +29,7 @@ func ParseFRPCConfigToGoSSHParam(
 
 			res = append(res, GoSSHParam{
 				LocalAddr:  pv.GetLocalServerAddr(),
-				ServerAddr: net.JoinHostPort(cfg.ServerAddr, fmt.Sprintf("%d", cfg.SSHServerPort)),
+				ServerAddr: net.JoinHostPort(cfg.ServerAddr, fmt.Sprintf("%d", cfg.ServerPort)),
 
 				SSHExtraCmd: genSSHExtraCmd(*cfg, pv),
 			})
@@ -82,7 +82,7 @@ func genSSHExtraCmd(c v1.ClientCommonConfig, pc v1.ProxyConfigurer) string {
 }
 
 func genDialedCmd(c v1.ClientCommonConfig) string {
-	return fmt.Sprintf("ssh v0@%v -p %v", c.ServerAddr, c.SSHServerPort)
+	return fmt.Sprintf("ssh v0@%v -p %v", c.ServerAddr, c.ServerPort)
 }
 
 func genReverseCmd(pc v1.ProxyConfigurer) string {
