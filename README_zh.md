@@ -15,13 +15,33 @@ frp 在 >= v0.53.0 版本已经支持 ssh tunnel 模式 [ssh tunnel gateway](htt
 
 # 使用
 
-## 1. 准备 frpc toml 文件 (参考 conf/frpc_full_example.toml）
-注意：只支持 toml 文件格式。
+## 1. 下载对应的 tiny-frpc 版本并解压
+用户自己决定是用 native-ssh 版本还是 go-ssh 版本。请移步到本项目的 [releases](https://github.com/gofrp/tiny-frpc/releases) 下载。
 
-## 2. 下载对应的 tiny-frpc 版本
-用户自己决定是用 native-ssh 版本还是 go-ssh 版本。请移步到本项目的 releases 下载。 
+
+## 2. 准备 frpc toml 文件 (压缩包解压之后里面有最简使用配置，完整配置参考本项目 conf/frpc_full_example.toml）
+注意：本项目只支持 toml 文件格式。
+
+举个例子：
+```
+serverAddr = "127.0.0.1"
+
+# frps ssh tunnel gateway port
+serverPort = 2200
+
+[[proxies]]
+name = "test-tcp"
+type = "tcp"
+localIP = "127.0.0.1"
+localPort = 22
+remotePort = 6000
+```
 
 ## 3. 运行
-> ./frpc-xxx -c frpc.toml
+> ./frpc-gssh -c frpc.toml
+
+or
+
+> ./frpc-nssh -c frpc.toml
 
 即可在完成反向代理。
