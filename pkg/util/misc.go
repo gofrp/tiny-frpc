@@ -2,14 +2,10 @@ package util
 
 import (
 	"bytes"
-	"crypto/md5"
-	"crypto/subtle"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 	"unicode"
 )
@@ -20,18 +16,6 @@ func JSONEncode(args interface{}) string {
 		return fmt.Sprintf("args: %v, error: %v", args, err)
 	}
 	return string(buf)
-}
-
-func GetAuthKey(token string, timestamp int64) (key string) {
-	md5Ctx := md5.New()
-	md5Ctx.Write([]byte(token))
-	md5Ctx.Write([]byte(strconv.FormatInt(timestamp, 10)))
-	data := md5Ctx.Sum(nil)
-	return hex.EncodeToString(data)
-}
-
-func ConstantTimeEqString(a, b string) bool {
-	return subtle.ConstantTimeCompare([]byte(a), []byte(b)) == 1
 }
 
 func EmptyOr[T comparable](v T, fallback T) T {
