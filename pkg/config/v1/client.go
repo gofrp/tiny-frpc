@@ -40,9 +40,9 @@ type ClientCommonConfig struct {
 	// default, this value is "0.0.0.0".
 	ServerAddr string `json:"serverAddr,omitempty"`
 
-	// SSHServerPort specifies the port to connect to the ssh server on. By default,
+	// ServerPort specifies the port to connect to the ssh server on. By default,
 	// this value is 2200.
-	SSHServerPort int `json:"sshServerPort,omitempty"`
+	ServerPort int `json:"serverPort,omitempty"`
 
 	// Include other config files for proxies.
 	IncludeConfigFiles []string `json:"includes,omitempty"`
@@ -50,7 +50,7 @@ type ClientCommonConfig struct {
 
 func (c *ClientCommonConfig) Complete() {
 	c.ServerAddr = util.EmptyOr(c.ServerAddr, "0.0.0.0")
-	c.SSHServerPort = util.EmptyOr(c.SSHServerPort, 2200)
+	c.ServerPort = util.EmptyOr(c.ServerPort, 2200)
 	c.Auth.Complete()
 }
 

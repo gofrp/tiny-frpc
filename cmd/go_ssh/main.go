@@ -56,9 +56,13 @@ func main() {
 
 			log.Infof("start to run: %v", cmd)
 
-			tc := gssh.NewTunnelClient(cmd.LocalAddr, cmd.ServerAddr, cmd.SSHExtraCmd)
+			tc, err := gssh.NewTunnelClient(cmd.LocalAddr, cmd.ServerAddr, cmd.SSHExtraCmd)
+			if err != nil {
+				log.Errorf("new ssh tunnel client error: %v", err)
+				return
+			}
 
-			err := tc.Start()
+			err = tc.Start()
 			if err != nil {
 				log.Errorf("cmd: %v run error: %v", cmd, err)
 				return

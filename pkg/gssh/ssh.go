@@ -1,7 +1,11 @@
 package gssh
 
 import (
+	"fmt"
 	"net"
+	"os"
+	"os/user"
+	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
 
@@ -16,20 +20,58 @@ type TunnelClient struct {
 
 	sshConn *ssh.Client
 	ln      net.Listener
+
+	authMethod ssh.AuthMethod
 }
 
-func NewTunnelClient(localAddr string, sshServer string, commands string) *TunnelClient {
-	return &TunnelClient{
-		localAddr: localAddr,
-		sshServer: sshServer,
-		commands:  commands,
+func getDefaultPrivateKeyPath() (string, error) {
+	usr, err := user.Current()
+	if err != nil {
+		return "", err
 	}
+	return filepath.Join(usr.HomeDir, ".ssh", "id_rsa"), nil
+}
+
+func publicKeyAuthFunc(kPath string) (ssh.AuthMethod, error) {
+	key, err := os.ReadFile(kPath)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read private key: %v", err)
+	}
+
+	signer, err := ssh.ParsePrivateKey(key)
+	if err != nil {
+		return nil, fmt.Errorf("unable to parse private key: %v", err)
+	}
+
+	return ssh.PublicKeys(signer), nil
+}
+
+func NewTunnelClient(localAddr string, sshServer string, commands string) (*TunnelClient, error) {
+	privateKeyPath, err := getDefaultPrivateKeyPath()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get default private key path: %v", err)
+	}
+
+	log.Infof("get ssh private key file: %v", privateKeyPath)
+
+	authMethod, err := publicKeyAuthFunc(privateKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate auth method: %v", err)
+	}
+
+	return &TunnelClient{
+		localAddr:  localAddr,
+		sshServer:  sshServer,
+		commands:   commands,
+		authMethod: authMethod,
+	}, nil
 }
 
 func (c *TunnelClient) Start() error {
 	config := &ssh.ClientConfig{
 		User:            "v0",
-		HostKeyCallback: func(string, net.Addr, ssh.PublicKey) error { return nil },
+		Auth:            []ssh.AuthMethod{c.authMethod},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
 	conn, err := ssh.Dial("tcp", c.sshServer, config)
@@ -43,17 +85,14 @@ func (c *TunnelClient) Start() error {
 		return err
 	}
 	c.ln = l
-	ch, req, err := conn.OpenChannel("session", []byte(""))
+
+	session, err := c.sshConn.NewSession()
 	if err != nil {
 		return err
 	}
-	defer ch.Close()
-	go ssh.DiscardRequests(req)
+	defer session.Close()
 
-	type command struct {
-		Cmd string
-	}
-	_, err = ch.SendRequest("exec", false, ssh.Marshal(command{Cmd: c.commands}))
+	err = session.Start(c.commands)
 	if err != nil {
 		return err
 	}
