@@ -1,6 +1,6 @@
 ### Features
 
-Introducing version 0.1.0 of our proxy solution, we enable reverse proxying through standard ssh protocol communicating with frps.
+Introducing version of our proxy solution, we enable reverse proxying through standard ssh protocol communicating with frps.
 
 We offer two binary program options for different user needs:
 
