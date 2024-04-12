@@ -8,7 +8,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-tiny_frpc_version=`./bin/frpc-gssh --v`
+tiny_frpc_version=`./bin/tiny-frpc --v`
 echo "build version: $tiny_frpc_version"
 
 # cross_compiles
@@ -28,25 +28,25 @@ for os in $os_all; do
         tiny_frpc_path="./packages/tiny-frpc_${tiny_frpc_version}_${os}_${arch}"
 
         if [ "x${os}" = x"windows" ]; then
-            if [ ! -f "./frpc-gssh_${os}_${arch}.exe" ]; then
+            if [ ! -f "./tiny-frpc_${os}_${arch}.exe" ]; then
                 continue
             fi
-            if [ ! -f "./frpc-nssh_${os}_${arch}.exe" ]; then
+            if [ ! -f "./tiny-frpc-ssh_${os}_${arch}.exe" ]; then
                 continue
             fi
             mkdir ${tiny_frpc_path}
-            mv ./frpc-gssh_${os}_${arch}.exe ${tiny_frpc_path}/frpc-gssh.exe
-            mv ./frpc-nssh_${os}_${arch}.exe ${tiny_frpc_path}/frpc-nssh.exe
+            mv ./tiny-frpc_${os}_${arch}.exe ${tiny_frpc_path}/tiny-frpc.exe
+            mv ./tiny-frpc-ssh_${os}_${arch}.exe ${tiny_frpc_path}/tiny-frpc-ssh.exe
         else
-            if [ ! -f "./frpc-gssh_${os}_${arch}" ]; then
+            if [ ! -f "./tiny-frpc_${os}_${arch}" ]; then
                 continue
             fi
-            if [ ! -f "./frpc-nssh_${os}_${arch}" ]; then
+            if [ ! -f "./tiny-frpc-ssh_${os}_${arch}" ]; then
                 continue
             fi
             mkdir ${tiny_frpc_path}
-            mv ./frpc-gssh_${os}_${arch} ${tiny_frpc_path}/frpc-gssh
-            mv ./frpc-nssh_${os}_${arch} ${tiny_frpc_path}/frpc-nssh
+            mv ./tiny-frpc_${os}_${arch} ${tiny_frpc_path}/tiny-frpc
+            mv ./tiny-frpc-ssh_${os}_${arch} ${tiny_frpc_path}/tiny-frpc-ssh
         fi  
         cp ../LICENSE ${tiny_frpc_path}
         cp -f ../conf/frpc.toml ${tiny_frpc_path}

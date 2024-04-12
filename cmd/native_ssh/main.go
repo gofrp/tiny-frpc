@@ -21,7 +21,7 @@ func main() {
 	)
 
 	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "Path to the configuration file")
-	flag.BoolVar(&showVersion, "v", false, "version of frpc-gssh")
+	flag.BoolVar(&showVersion, "v", false, "version of tiny-frpc")
 	flag.Parse()
 
 	if showVersion {

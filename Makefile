@@ -18,10 +18,10 @@ vet:
 	go vet ./...
 
 gssh:
-	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags frpc-gssh -o bin/frpc-gssh ./cmd/go_ssh
+	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags tiny-frpc -o bin/tiny-frpc ./cmd/go_ssh
 
 nssh:
-	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags frpc-nssh -o bin/frpc-nssh ./cmd/native_ssh
+	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags tiny-frpc-ssh -o bin/tiny-frpc-ssh ./cmd/native_ssh
 
 test: gotest
 
@@ -31,8 +31,8 @@ gotest:
 alltest: vet gotest
 	
 clean:
-	rm -f ./bin/frpc-gssh
-	rm -f ./bin/frpc-nssh
+	rm -f ./bin/tiny-frpc
+	rm -f ./bin/tiny-frpc-ssh
 	rm -rf ./lastversion
 
 env:
