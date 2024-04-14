@@ -1,12 +1,10 @@
-#####################
 # This configuration file is a subset of `https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml`, with no additional parameters added, but some parameters not supported by the command line have been trimmed. 
 
 # The list of parameters supported by this file corresponds one-to-one with the parameters started under the command line in [frp ssh tunnel gateway](https://github.com/fatedier/frp?tab=readme-ov-file#ssh-tunnel-gateway). Our open-source project is aimed at parsing the configuration file into standard ssh commands.
-#####################
 
 # This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues.
 
-# your proxy name will be changed to {user}.{proxy}
+# your proxy name will be changed to {user}.{user}.{proxy}
 user = "your_name"
 
 # A literal address or host name for IPv6 must be enclosed
@@ -17,7 +15,6 @@ serverAddr = "0.0.0.0"
 # this should be frps ssh tunnel gateway listern port
 # more info https://github.com/fatedier/frp?tab=readme-ov-file#ssh-tunnel-gateway
 serverPort = 2200
-
 
 # method only be "token" value, it's hard code
 auth.method = "token"

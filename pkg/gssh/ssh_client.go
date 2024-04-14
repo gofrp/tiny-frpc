@@ -16,7 +16,7 @@ import (
 type TunnelClient struct {
 	localAddr string
 	sshServer string
-	commands  string
+	command   string
 
 	sshConn *ssh.Client
 	ln      net.Listener
@@ -46,13 +46,13 @@ func publicKeyAuthFunc(kPath string) (ssh.AuthMethod, error) {
 	return ssh.PublicKeys(signer), nil
 }
 
-func NewTunnelClient(localAddr string, sshServer string, commands string) (*TunnelClient, error) {
+func NewTunnelClient(localAddr string, sshServer string, command string) (*TunnelClient, error) {
 	privateKeyPath, err := getDefaultPrivateKeyPath()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get default private key path: %v", err)
 	}
 
-	log.Infof("get ssh private key file: %v", privateKeyPath)
+	log.Infof("get ssh private key file: [%v] to communicate with frps by ssh protocol", privateKeyPath)
 
 	authMethod, err := publicKeyAuthFunc(privateKeyPath)
 	if err != nil {
@@ -62,7 +62,7 @@ func NewTunnelClient(localAddr string, sshServer string, commands string) (*Tunn
 	return &TunnelClient{
 		localAddr:  localAddr,
 		sshServer:  sshServer,
-		commands:   commands,
+		command:    command,
 		authMethod: authMethod,
 	}, nil
 }
@@ -92,10 +92,12 @@ func (c *TunnelClient) Start() error {
 	}
 	defer session.Close()
 
-	err = session.Start(c.commands)
+	err = session.Start(c.command)
 	if err != nil {
 		return err
 	}
+
+	log.Infof("session start cmd [%v] success", c.command)
 
 	c.serveListener()
 	return nil
@@ -117,6 +119,9 @@ func (c *TunnelClient) serveListener() {
 			log.Errorf("ssh tunnel cient accept error: %v", err)
 			return
 		}
+
+		log.Infof("accept a new connection. remote: %v, local: %v", conn.RemoteAddr().String(), conn.LocalAddr().String())
+
 		go c.hanldeConn(conn)
 	}
 }

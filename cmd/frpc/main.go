@@ -3,11 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"sync"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
-	"github.com/gofrp/tiny-frpc/pkg/gssh"
+	"github.com/gofrp/tiny-frpc/pkg/model"
 	"github.com/gofrp/tiny-frpc/pkg/util"
 	"github.com/gofrp/tiny-frpc/pkg/util/log"
 	"github.com/gofrp/tiny-frpc/pkg/util/version"
@@ -42,35 +45,28 @@ func main() {
 
 	log.Infof("common cfg: %v, proxy cfg: %v, visitor cfg: %v", util.JSONEncode(cfg), util.JSONEncode(proxyCfgs), util.JSONEncode(visitorCfgs))
 
-	goSSHParams := config.ParseFRPCConfigToGoSSHParam(cfg, proxyCfgs, visitorCfgs)
-
-	log.Infof("ssh cmds len_num: %v", len(goSSHParams))
-
-	wg := new(sync.WaitGroup)
-
-	for _, cmd := range goSSHParams {
-		wg.Add(1)
-
-		go func(cmd config.GoSSHParam) {
-			defer wg.Done()
-
-			log.Infof("start to run: %v", cmd)
-
-			tc, err := gssh.NewTunnelClient(cmd.LocalAddr, cmd.ServerAddr, cmd.SSHExtraCmd)
-			if err != nil {
-				log.Errorf("new ssh tunnel client error: %v", err)
-				return
-			}
-
-			err = tc.Start()
-			if err != nil {
-				log.Errorf("cmd: %v run error: %v", cmd, err)
-				return
-			}
-		}(cmd)
+	err = runner.New(cfg, proxyCfgs, visitorCfgs)
+	if err != nil {
+		log.Errorf("new runner error: %v", err)
+		return
 	}
 
-	wg.Wait()
+	go handleTermSignal(runner)
 
-	log.Infof("stopping process calling native ssh to frps, exit...")
+	err = runner.Run()
+	if err != nil {
+		log.Errorf("run error: %v", err)
+		return
+	}
+
+	time.Sleep(time.Millisecond * 10)
+	log.Infof("process exit...")
+}
+
+func handleTermSignal(run model.Runner) {
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+	v := <-ch
+	log.Infof("get signal term: %v, gracefully shutdown", v)
+	run.Close()
 }
