@@ -83,6 +83,11 @@ Assuming that the domain name 'test-tiny-frpc.frps.com' is resolved to the machi
 > curl -v 'http://test-tiny-frpc.frps.com/'
 
 
+
+# Principle
+![how tiny frpc works](doc/pic/architecture.png)
+
+
 # Disclaimer
 
 **This is currently a preview version. Compatibility is not guaranteed. It is presently for testing purposes only and should not be used in production environments!**

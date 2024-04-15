@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
-	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
 type GoSSHParam struct {
@@ -53,9 +52,6 @@ func ParseFRPCConfigToSSHCmd(
 		switch pv.GetProxyType() {
 		case v1.ProxyTypeTCP, v1.ProxyTypeHTTP, v1.ProxyTypeHTTPS, v1.ProxyTypeTCPMUX, v1.ProxyTypeSTCP:
 			cmd := genFullSSHCmd(*cfg, pv)
-
-			log.Infof("get cmd: %v ", cmd)
-
 			res = append(res, cmd)
 		default:
 			panic("invalid proxy type: " + pv.GetProxyType())

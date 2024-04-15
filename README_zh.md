@@ -88,6 +88,9 @@ HTTP 服务：
 访问到内网的 HTTP 服务。
 
 
+# 原理
+![how tiny frpc works](doc/pic/architecture.png)
+
 
 # 说明
 

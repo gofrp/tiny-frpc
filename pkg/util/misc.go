@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
-	"os/signal"
-	"syscall"
 	"unicode"
 )
 
@@ -53,10 +50,4 @@ func Ternary[T any](condition bool, ifOutput T, elseOutput T) T {
 	}
 
 	return elseOutput
-}
-
-func handleTermSignal() {
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	<-ch
 }
