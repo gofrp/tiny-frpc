@@ -69,18 +69,16 @@ func (nr *NativeSSHRun) Run() error {
 
 		go func(cmd string, idx int) {
 			defer nr.wg.Done()
-			ctx, cancel := context.WithCancel(nr.ctx)
-			defer cancel()
 
 			log.Infof("start to run: %v", cmd)
 
-			cmdWrapper := nssh.NewCmdWrapper(ctx, cmd)
+			cmdWrapper := nssh.NewCmdWrapper(nr.ctx, cmd)
 
 			nr.mu.Lock()
 			nr.cws[idx] = cmdWrapper
 			nr.mu.Unlock()
 
-			cmdWrapper.ExecuteCommand(ctx)
+			cmdWrapper.ExecuteCommand(nr.ctx)
 		}(cmd, i)
 	}
 
