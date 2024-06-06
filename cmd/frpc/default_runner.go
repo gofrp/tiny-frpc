@@ -24,7 +24,7 @@ var runner model.Runner = defaultRunner{}
 
 type defaultRunner struct{}
 
-func (r defaultRunner) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (err error) {
+func (r defaultRunner) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (err error) {
 	log.Infof("init default runner")
 	return
 }
