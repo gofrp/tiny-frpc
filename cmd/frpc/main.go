@@ -59,7 +59,7 @@ func main() {
 
 	log.Infof("common cfg: %v, proxy cfg: %v, visitor cfg: %v", util.JSONEncode(cfg), util.JSONEncode(proxyCfgs), util.JSONEncode(visitorCfgs))
 
-	err = runner.New(cfg, proxyCfgs, visitorCfgs)
+	err = runner.Init(cfg, proxyCfgs, visitorCfgs)
 	if err != nil {
 		log.Errorf("new runner error: %v", err)
 		return
