@@ -19,7 +19,7 @@ import (
 )
 
 type Runner interface {
-	New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error
+	Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error
 	Run() error
 	Close() error
 }
