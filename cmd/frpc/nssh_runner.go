@@ -40,12 +40,12 @@ type NativeSSHRun struct {
 	cancelFunc context.CancelFunc
 }
 
-func (nr *NativeSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
+func NewRunner(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (*NativeSSHRun, error) {
 	log.Infof("init native ssh runner")
 
-	nr.ctx, nr.cancelFunc = context.WithCancel(context.Background())
+	ctx, cancelFunc := context.WithCancel(context.Background())
 
-	runner = &NativeSSHRun{
+	return &NativeSSHRun{
 		commonCfg: commonCfg,
 		pxyCfg:    pxyCfg,
 		vCfg:      vCfg,
@@ -54,8 +54,9 @@ func (nr *NativeSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.Proxy
 		mu: &sync.RWMutex{},
 
 		cws: make(map[int]*nssh.CmdWrapper, 0),
-	}
-	return nil
+		ctx: ctx,
+		cancelFunc: cancelFunc,
+	}, nil
 }
 
 func (nr *NativeSSHRun) Run() error {
@@ -99,8 +100,4 @@ func (nr *NativeSSHRun) Close() error {
 	}
 
 	return nil
-}
-
-func init() {
-	runner = &NativeSSHRun{}
 }
