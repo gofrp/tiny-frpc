@@ -37,7 +37,7 @@ type GoSSHRun struct {
 	tcs map[int]*gssh.TunnelClient
 }
 
-func (gr *GoSSHRun) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
+func (gr *GoSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
 	log.Infof("init go ssh runner")
 
 	runner = &GoSSHRun{
