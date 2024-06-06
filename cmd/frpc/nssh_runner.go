@@ -35,11 +35,15 @@ type NativeSSHRun struct {
 	wg *sync.WaitGroup
 	mu *sync.RWMutex
 
-	cws map[int]*nssh.CmdWrapper
+	cws        map[int]*nssh.CmdWrapper
+	ctx        context.Context
+	cancelFunc context.CancelFunc
 }
 
 func (nr *NativeSSHRun) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
 	log.Infof("init native ssh runner")
+
+	nr.ctx, nr.cancelFunc = context.WithCancel(context.Background())
 
 	runner = &NativeSSHRun{
 		commonCfg: commonCfg,
@@ -64,17 +68,16 @@ func (nr *NativeSSHRun) Run() error {
 
 		go func(cmd string, idx int) {
 			defer nr.wg.Done()
-			ctx := context.Background()
 
 			log.Infof("start to run: %v", cmd)
 
-			cmdWrapper := nssh.NewCmdWrapper(ctx, cmd)
+			cmdWrapper := nssh.NewCmdWrapper(nr.ctx, cmd)
 
 			nr.mu.Lock()
 			nr.cws[idx] = cmdWrapper
 			nr.mu.Unlock()
 
-			cmdWrapper.ExecuteCommand(ctx)
+			cmdWrapper.ExecuteCommand(nr.ctx)
 		}(cmd, i)
 	}
 
@@ -86,6 +89,8 @@ func (nr *NativeSSHRun) Run() error {
 }
 
 func (nr *NativeSSHRun) Close() error {
+	nr.cancelFunc() // Ensure all goroutines are signaled to stop
+
 	nr.mu.Lock()
 	defer nr.mu.Unlock()
 
