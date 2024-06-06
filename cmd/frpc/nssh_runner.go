@@ -40,7 +40,7 @@ type NativeSSHRun struct {
 	cancelFunc context.CancelFunc
 }
 
-func (nr *NativeSSHRun) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
+func (nr *NativeSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
 	log.Infof("init native ssh runner")
 
 	nr.ctx, nr.cancelFunc = context.WithCancel(context.Background())
