@@ -18,6 +18,7 @@
 package main
 
 import (
+	"context"
 	"sync"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
@@ -35,10 +36,14 @@ type GoSSHRun struct {
 	mu *sync.RWMutex
 
 	tcs map[int]*gssh.TunnelClient
+	ctx context.Context
+	cancelFunc context.CancelFunc
 }
 
 func (gr *GoSSHRun) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
 	log.Infof("init go ssh runner")
+
+	gr.ctx, gr.cancelFunc = context.WithCancel(context.Background())
 
 	runner = &GoSSHRun{
 		commonCfg: commonCfg,
@@ -96,6 +101,8 @@ func (gr *GoSSHRun) Run() error {
 }
 
 func (gr *GoSSHRun) Close() error {
+	gr.cancelFunc() // Ensure all goroutines are signaled to stop
+
 	gr.mu.Lock()
 	defer gr.mu.Unlock()
 

@@ -20,6 +20,7 @@ package main
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
@@ -36,10 +37,14 @@ type NativeSSHRun struct {
 	mu *sync.RWMutex
 
 	cws map[int]*nssh.CmdWrapper
+	ctx context.Context
+	cancelFunc context.CancelFunc
 }
 
 func (nr *NativeSSHRun) New(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
 	log.Infof("init native ssh runner")
+
+	nr.ctx, nr.cancelFunc = context.WithCancel(context.Background())
 
 	runner = &NativeSSHRun{
 		commonCfg: commonCfg,
@@ -64,7 +69,8 @@ func (nr *NativeSSHRun) Run() error {
 
 		go func(cmd string, idx int) {
 			defer nr.wg.Done()
-			ctx := context.Background()
+			ctx, cancel := context.WithCancel(nr.ctx)
+			defer cancel()
 
 			log.Infof("start to run: %v", cmd)
 
@@ -86,6 +92,8 @@ func (nr *NativeSSHRun) Run() error {
 }
 
 func (nr *NativeSSHRun) Close() error {
+	nr.cancelFunc() // Ensure all goroutines are signaled to stop
+
 	nr.mu.Lock()
 	defer nr.mu.Unlock()
 
