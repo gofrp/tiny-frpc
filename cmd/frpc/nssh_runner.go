@@ -20,7 +20,6 @@ package main
 import (
 	"context"
 	"sync"
-	"time"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
