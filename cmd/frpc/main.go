@@ -31,41 +31,26 @@ import (
 )
 
 func main() {
-	var (
-		cfgFilePath string
-		showVersion bool
-	)
-
-	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "path to the configuration file")
-	flag.BoolVar(&showVersion, "v", false, "version of tiny-frpc")
-	flag.Parse()
+	cfgFilePath, showVersion := parseArgs()
 
 	if showVersion {
 		fmt.Println(version.Full())
 		return
 	}
 
-	cfg, proxyCfgs, visitorCfgs, _, err := config.LoadClientConfig(cfgFilePath, true)
+	cfg, proxyCfgs, visitorCfgs, err := loadConfig(cfgFilePath)
 	if err != nil {
 		log.Errorf("load frpc config error: %v", err)
 		return
 	}
 
-	_, err = v1.ValidateAllClientConfig(cfg, proxyCfgs, visitorCfgs)
-	if err != nil {
-		log.Errorf("validate frpc config error: %v", err)
-		return
-	}
-
-	log.Infof("common cfg: %v, proxy cfg: %v, visitor cfg: %v", util.JSONEncode(cfg), util.JSONEncode(proxyCfgs), util.JSONEncode(visitorCfgs))
+	setupSignalHandler(runner)
 
 	err = runner.New(cfg, proxyCfgs, visitorCfgs)
 	if err != nil {
 		log.Errorf("new runner error: %v", err)
 		return
 	}
-
-	go handleTermSignal(runner)
 
 	err = runner.Run()
 	if err != nil {
@@ -77,10 +62,34 @@ func main() {
 	log.Infof("process exit...")
 }
 
-func handleTermSignal(run model.Runner) {
+func parseArgs() (cfgFilePath string, showVersion bool) {
+	flag.StringVar(&cfgFilePath, "c", "frpc.toml", "path to the configuration file")
+	flag.BoolVar(&showVersion, "v", false, "version of tiny-frpc")
+	flag.Parse()
+	return
+}
+
+func loadConfig(cfgFilePath string) (*v1.ClientCommonConfig, []v1.ProxyConfigurer, []v1.VisitorConfigurer, error) {
+	cfg, proxyCfgs, visitorCfgs, _, err := config.LoadClientConfig(cfgFilePath, true)
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	_, err = v1.ValidateAllClientConfig(cfg, proxyCfgs, visitorCfgs)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("validate frpc config error: %v", err)
+	}
+
+	log.Infof("common cfg: %v, proxy cfg: %v, visitor cfg: %v", util.JSONEncode(cfg), util.JSONEncode(proxyCfgs), util.JSONEncode(visitorCfgs))
+	return cfg, proxyCfgs, visitorCfgs, nil
+}
+
+func setupSignalHandler(run model.Runner) {
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
-	v := <-ch
-	log.Infof("get signal term: %v, gracefully shutdown", v)
-	run.Close()
+	go func() {
+		v := <-ch
+		log.Infof("get signal term: %v, gracefully shutdown", v)
+		run.Close()
+	}()
 }
