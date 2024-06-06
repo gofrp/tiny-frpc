@@ -35,8 +35,8 @@ type NativeSSHRun struct {
 	wg *sync.WaitGroup
 	mu *sync.RWMutex
 
-	cws map[int]*nssh.CmdWrapper
-	ctx context.Context
+	cws        map[int]*nssh.CmdWrapper
+	ctx        context.Context
 	cancelFunc context.CancelFunc
 }
 
