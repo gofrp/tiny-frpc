@@ -37,10 +37,10 @@ type GoSSHRun struct {
 	tcs map[int]*gssh.TunnelClient
 }
 
-func (gr *GoSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) error {
+func NewRunner(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (*GoSSHRun, error) {
 	log.Infof("init go ssh runner")
 
-	runner = &GoSSHRun{
+	return &GoSSHRun{
 		commonCfg: commonCfg,
 		pxyCfg:    pxyCfg,
 		vCfg:      vCfg,
@@ -49,8 +49,7 @@ func (gr *GoSSHRun) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConf
 		mu: &sync.RWMutex{},
 
 		tcs: make(map[int]*gssh.TunnelClient, 0),
-	}
-	return nil
+	}, nil
 }
 
 func (gr *GoSSHRun) Run() error {
@@ -103,8 +102,4 @@ func (gr *GoSSHRun) Close() error {
 		tc.Close()
 	}
 	return nil
-}
-
-func init() {
-	runner = &GoSSHRun{}
 }

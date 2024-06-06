@@ -44,13 +44,13 @@ func main() {
 		return
 	}
 
-	setupSignalHandler(runner)
-
-	err = runner.Init(cfg, proxyCfgs, visitorCfgs)
+	runner, err := NewRunner(cfg, proxyCfgs, visitorCfgs)
 	if err != nil {
 		log.Errorf("new runner error: %v", err)
 		return
 	}
+
+	setupSignalHandler(runner)
 
 	err = runner.Run()
 	if err != nil {
