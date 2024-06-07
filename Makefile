@@ -18,7 +18,7 @@ vet:
 	go vet ./...
 
 gssh:
-	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags gssh -o bin/tiny-frpc ./cmd/frpc
+	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -o bin/tiny-frpc ./cmd/frpc
 
 nssh:
 	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags nssh -o bin/tiny-frpc-ssh ./cmd/frpc
