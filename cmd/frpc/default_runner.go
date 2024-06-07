@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build !gssh && !nssh
+// +build !gssh,!nssh
+
 package main
 
 import (
@@ -20,14 +23,12 @@ import (
 	"github.com/gofrp/tiny-frpc/pkg/util/log"
 )
 
-var runner model.Runner = defaultRunner{}
+func NewRunner(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (model.Runner, error) {
+	log.Infof("init default runner")
+	return defaultRunner{}, nil
+}
 
 type defaultRunner struct{}
-
-func (r defaultRunner) Init(commonCfg *v1.ClientCommonConfig, pxyCfg []v1.ProxyConfigurer, vCfg []v1.VisitorConfigurer) (err error) {
-	log.Infof("init default runner")
-	return
-}
 
 func (r defaultRunner) Run() (err error) {
 	return
