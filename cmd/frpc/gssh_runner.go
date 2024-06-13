@@ -18,7 +18,9 @@
 package main
 
 import (
+	"context"
 	"sync"
+	"time"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
@@ -102,4 +104,37 @@ func (gr *GoSSHRun) Close() error {
 		tc.Close()
 	}
 	return nil
+}
+
+func (gr *GoSSHRun) retryConnection(ctx context.Context, cmd config.GoSSHParam, idx int) {
+	backoff := 1 * time.Second
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			tc, err := gssh.NewTunnelClient(cmd.LocalAddr, cmd.ServerAddr, cmd.SSHExtraCmd)
+			if err != nil {
+				log.Errorf("retry new ssh tunnel client error: %v", err)
+				continue
+			}
+
+			err = tc.Start()
+			if err != nil {
+				log.Errorf("retry cmd: %v run error: %v", cmd, err)
+				time.Sleep(backoff)
+				if backoff < 30*time.Second {
+					backoff *= 2
+				}
+				continue
+			}
+
+			gr.mu.Lock()
+			gr.tcs[idx] = tc
+			gr.mu.Unlock()
+
+			gr.wg.Done()
+			return
+		}
+	}
 }

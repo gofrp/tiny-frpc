@@ -20,6 +20,7 @@ package main
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/gofrp/tiny-frpc/pkg/config"
 	v1 "github.com/gofrp/tiny-frpc/pkg/config/v1"
@@ -79,6 +80,32 @@ func (nr *NativeSSHRun) Run() error {
 			nr.mu.Unlock()
 
 			cmdWrapper.ExecuteCommand(nr.ctx)
+
+			// Retry logic with exponential backoff
+			backoff := 1 * time.Second
+			for {
+				select {
+				case <-nr.ctx.Done():
+					return
+				default:
+					cmdWrapper := nssh.NewCmdWrapper(nr.ctx, cmd)
+					cmdWrapper.ExecuteCommand(nr.ctx)
+					if cmdWrapper.cmd.ProcessState.Success() {
+						log.Infof("Command %v executed successfully after retry", cmd)
+						nr.mu.Lock()
+						nr.cws[idx] = cmdWrapper
+						nr.mu.Unlock()
+						nr.wg.Done()
+						return
+					} else {
+						log.Errorf("Retry command %v failed, retrying in %v seconds", cmd, backoff)
+						time.Sleep(backoff)
+						if backoff < 30*time.Second {
+							backoff *= 2
+						}
+					}
+				}
+			}
 		}(cmd, i)
 	}
 
