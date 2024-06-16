@@ -1,7 +1,7 @@
 export PATH := $(GOPATH)/bin:$(PATH)
 LDFLAGS := -s -w
 
-all: fmt build
+all: fmt build check-size
 
 build: gssh nssh
 
@@ -22,6 +22,17 @@ gssh:
 
 nssh:
 	env CGO_ENABLED=0 go build -trimpath -ldflags "$(LDFLAGS)" -tags nssh -o bin/tiny-frpc-ssh ./cmd/frpc
+
+check-size:
+	@echo "Checking file sizes..."
+	@FRPC_SIZE=$$(stat -c%s "./bin/tiny-frpc"); \
+	FRPC_SSH_SIZE=$$(stat -c%s "./bin/tiny-frpc-ssh"); \
+	if [ $$FRPC_SSH_SIZE -gt $$FRPC_SIZE ]; then \
+		echo "Error: tiny-frpc-ssh ($$FRPC_SSH_SIZE bytes) is larger than tiny-frpc ($$FRPC_SIZE bytes)"; \
+		exit 1; \
+	else \
+		echo "File size check passed: tiny-frpc-ssh ($$FRPC_SSH_SIZE bytes) is not larger than tiny-frpc ($$FRPC_SIZE bytes)"; \
+	fi
 
 test: gotest
 
