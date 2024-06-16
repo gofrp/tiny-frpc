@@ -91,6 +91,9 @@ HTTP 服务：
 # 原理
 ![how tiny frpc works](doc/pic/architecture.png)
 
+# 贡献
+
+我们欢迎对 tiny-frpc 项目的贡献。如果您有兴趣帮助，请在我们的 [CONTRIBUTING.md](CONTRIBUTING.md) 文件中找到贡献指南。我们期待您的Pull Requests 和 Issue 报告。
 
 # 说明
 
