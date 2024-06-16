@@ -87,6 +87,9 @@ Assuming that the domain name 'test-tiny-frpc.frps.com' is resolved to the machi
 # Principle
 ![how tiny frpc works](doc/pic/architecture.png)
 
+# Contributing
+
+We welcome contributions to the tiny-frpc project. If you're interested in helping, you can find the contributing guidelines in our [CONTRIBUTING.md](CONTRIBUTING.md) file. We look forward to your pull requests and issue reports.
 
 # Disclaimer
 
