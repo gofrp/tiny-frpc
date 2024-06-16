@@ -28,3 +28,6 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Check File Size
+        run: make check-size
