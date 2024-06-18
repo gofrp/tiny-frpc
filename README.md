@@ -91,6 +91,23 @@ Assuming that the domain name 'test-tiny-frpc.frps.com' is resolved to the machi
 
 We welcome contributions to the tiny-frpc project. If you're interested in helping, you can find the contributing guidelines in our [CONTRIBUTING.md](CONTRIBUTING.md) file. We look forward to your pull requests and issue reports.
 
+
+# FAQ
+
+## What is the relationship with frp?
+tiny-frpc is not a project that replaces frp. It is a side project of frp. While frp includes both frpc (the client) and frps (the server), tiny-frpc is a slimmed-down version of frpc.
+
+## What is the relationship with frpc?
+tiny-frpc is a slim version of frpc, offering a subset of frpc's features focused on providing the most minimalistic reverse proxy capabilities. It uses the SSH protocol to communicate with frps.
+
+## Use Cases
+tiny-frpc is suitable for resource-sensitive devices, such as micro-embedded systems.
+
+- **frpc File Size**: < 15MB
+- **tiny-frpc Size**: < 6MB
+- **tiny-frpc-ssh Size**: < 4MB
+
+
 # Disclaimer
 
 **This is currently a preview version. Compatibility is not guaranteed. It is presently for testing purposes only and should not be used in production environments!**
