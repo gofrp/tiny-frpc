@@ -95,6 +95,23 @@ HTTP 服务：
 
 我们欢迎对 tiny-frpc 项目的贡献。如果您有兴趣帮助，请在我们的 [CONTRIBUTING.md](CONTRIBUTING.md) 文件中找到贡献指南。我们期待您的Pull Requests 和 Issue 报告。
 
+# FAQ
+## 跟 frp 什么关系？
+不是跟 frp 一样的项目，不是为了取代 frp，是 frp 的一个 side project。frp 包含 frpc 和 frps 客户端和服务端，tiny-frpc 只是 frpc 的一个 slim 版本。
+
+## 跟 frpc 什么关系？
+tiny-frpc 是 frpc 的一个 slim 版本，功能是 frpc 的子集，提供最精简的反向代理能力，底层走的是 SSH 协议与 frps 通信。
+
+## 适用场景
+对资源敏感型的设备，如微型嵌入式设备。
+
+frpc fize size < 15MB
+
+tiny-frpc size < 6MB
+
+tiny-frpc-ssh size < 4MB
+
+
 # 说明
 
 **当前是预览版本，不保证兼容性，目前仅供测试使用，不要用于生产环境!!!**
