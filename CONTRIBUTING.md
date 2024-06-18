@@ -12,6 +12,10 @@ Before submitting an issue, please check the issue tracker to avoid duplicates. 
 - Actual behavior
 - Any relevant logs or error messages
 
+### Using Issue Templates
+
+For bug reports and feature requests, please use the provided issue templates to ensure that all necessary details are included. This helps us to address your concerns more efficiently.
+
 ## Pull Requests
 
 We encourage pull requests from everyone. Here are some guidelines to help you get started:
@@ -36,4 +40,3 @@ We encourage pull requests from everyone. Here are some guidelines to help you g
 - Run the full test suite before submitting your pull request.
 
 Thank you for contributing to tiny-frpc! Your efforts help make the project better for everyone.
-
