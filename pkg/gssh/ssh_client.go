@@ -15,10 +15,12 @@
 package gssh
 
 import (
+	"crypto/ed25519"
+	"crypto/rand"
+	"encoding/pem"
 	"fmt"
 	"net"
 	"os"
-	"os/user"
 	"path/filepath"
 
 	"golang.org/x/crypto/ssh"
@@ -39,11 +41,55 @@ type TunnelClient struct {
 }
 
 func getDefaultPrivateKeyPath() (string, error) {
-	usr, err := user.Current()
+	execPath, err := os.Executable()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get executable path: %v", err)
 	}
-	return filepath.Join(usr.HomeDir, ".ssh", "id_rsa"), nil
+	execDir := filepath.Dir(execPath)
+	privateKeyPath := filepath.Join(execDir, "id_ed25519")
+
+	_, err = os.Stat(privateKeyPath)
+	if os.IsNotExist(err) {
+		log.Infof("private key file: [%v] does not exist, generating a new one", privateKeyPath)
+		err = generatePrivateKey(privateKeyPath)
+		if err != nil {
+			return "", fmt.Errorf("failed to generate private key: %v", err)
+		}
+	}
+
+	return privateKeyPath, nil
+}
+
+func generatePrivateKey(path string) error {
+	pubKey, privKey, err := ed25519.GenerateKey(rand.Reader)
+	if err != nil {
+		return fmt.Errorf("failed to generate ed25519 key: %v", err)
+	}
+
+	privPEM, err := ssh.MarshalPrivateKey(privKey, "tiny-frpc")
+	if err != nil {
+		return fmt.Errorf("failed to marshal private key: %v", err)
+	}
+	privBytes := pem.EncodeToMemory(privPEM)
+
+	pubSSH, err := ssh.NewPublicKey(pubKey)
+	if err != nil {
+		return fmt.Errorf("failed to create public key: %v", err)
+	}
+	pubBytes := ssh.MarshalAuthorizedKey(pubSSH)
+
+	err = os.WriteFile(path, privBytes, 0o600)
+	if err != nil {
+		return fmt.Errorf("failed to write private key file: %v", err)
+	}
+
+	err = os.WriteFile(path+".pub", pubBytes, 0o644)
+	if err != nil {
+		return fmt.Errorf("failed to write public key file: %v", err)
+	}
+
+	log.Infof("private key generated successfully at: [%v]", path)
+	return nil
 }
 
 func publicKeyAuthFunc(kPath string) (ssh.AuthMethod, error) {
